@@ -1,0 +1,72 @@
+version: '3.9'
+
+name: 'System Operation n Computer Architecture Project'
+
+networks:
+  project_network:
+    driver: bridge
+
+configs:
+  app_config:
+    file: ./config/app_config.ini
+
+services:
+  web:
+    image: nginx:latest
+    ports:
+      - "6942:80" # http://localhost:6942
+    volumes:
+      - ./index.html:/usr/share/nginx/html/index.html
+    container_name: html_container
+    networks:
+      - project_network
+    configs:
+      - source: app_config
+        target: /etc/nginx/conf.d/app_config.ini
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost/"]
+      interval: 30s
+      retries: 3
+      timeout: 10s
+      start_period: 10s
+
+  mysql:
+    image: mysql:latest
+    container_name: mysql_container
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+    volumes:
+      - mysql_data:/var/lib/mysql
+    networks:
+      - project_network
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 30s
+      retries: 5
+      timeout: 10s
+      start_period: 20s
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin:latest
+    container_name: phpmyadmin_container
+    environment:
+      PMA_HOST: ${PMA_HOST}
+      PMA_PORT: ${PMA_PORT}
+      PMA_USER: ${PMA_USER}
+      PMA_PASSWORD: ${PMA_PASSWORD}
+    ports:
+      - "8080:80" # http://localhost:8080
+    networks:
+      - project_network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080"]
+      interval: 30s
+      retries: 3
+      timeout: 10s
+      start_period: 10s
+
+volumes:
+  mysql_data: {}

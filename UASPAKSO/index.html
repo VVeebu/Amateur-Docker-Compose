@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Hello World!</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin: 50px;
+        }
+
+        button {
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            font-size: 16px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 20px;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>Hello World!</h1>
+    <p>How did you get here?</p>
+    <button id="mysteryButton" onclick="redirectToPgAdmin()">Mystery Button</button>
+
+    <script>
+        function redirectToPgAdmin() {
+            var button = document.getElementById("mysteryButton");
+            button.innerHTML = "Redirecting to PHPMyAdmin...";
+            button.disabled = true;
+            button.style.backgroundColor = '#6c757d';
+            setTimeout(function () {
+                window.location.href = 'http://localhost:8080';
+            }, 1000); 
+        }
+    </script>
+</body>
+
+</html>
